@@ -1,0 +1,89 @@
+[
+    {
+        "id": "f456e37d426d09e4",
+        "type": "udp in",
+        "z": "87d8bd25b9d705a6",
+        "d": true,
+        "name": "",
+        "iface": "",
+        "port": "2005",
+        "ipv": "udp4",
+        "multicast": "false",
+        "group": "",
+        "datatype": "buffer",
+        "x": 140,
+        "y": 80,
+        "wires": [
+            [
+                "b0911ed4bd5123c3"
+            ]
+        ]
+    },
+    {
+        "id": "327634cceeca8863",
+        "type": "function",
+        "z": "87d8bd25b9d705a6",
+        "name": "METER Huawei DTSU666H - FloatBE",
+        "func": "const Meter_ID = (msg.payload[0]); // Meter ID on the Modbus RS-485\nconst Meter_FC = (msg.payload[1]); // Type of data reading from the DTSU666H meter\nconst Meter_Bytes = (msg.payload[2]); // Number of bits sent by the DTSU666H meter, from slave\n\n// Change the address value Meter_ID to a different value (default setting = 11) if you changed the DTSU666H counter address in the inverter SUN2000 settings\nif (\n    Meter_ID === 11 && Meter_Bytes === 160\n    ) {\nconst Meter_Ia = (msg.payload.readFloatBE(3, 7)); // 2102\nconst Meter_Ib = (msg.payload.readFloatBE(7, 11)); // 2104\nconst Meter_Ic = (msg.payload.readFloatBE(11, 15)); // 2106\nconst Meter_Ua = (msg.payload.readFloatBE(19, 23)); // 2110\nconst Meter_Ub = (msg.payload.readFloatBE(23, 27)); // 2112 \nconst Meter_Uc = (msg.payload.readFloatBE(27, 31)); // 2114 \nconst Meter_Uab = (msg.payload.readFloatBE(35, 39)); // 2118\nconst Meter_Ubc = (msg.payload.readFloatBE(39, 43)); // 2120 \nconst Meter_Uca = (msg.payload.readFloatBE(43, 47)); // 2122 \nconst Meter_Freq = (msg.payload.readFloatBE(47, 51)); // 2124\nconst Meter_Pt = (msg.payload.readFloatBE(51, 55)); // 2126\nconst Meter_Pa = (msg.payload.readFloatBE(55, 59)); // 2128\nconst Meter_Pb = (msg.payload.readFloatBE(59, 63)); // 2130\nconst Meter_Pc = (msg.payload.readFloatBE(63, 67)); // 2132\nconst Meter_Qt = (msg.payload.readFloatBE(67, 71)); // 2134\nconst Meter_Qa = (msg.payload.readFloatBE(71, 75)); // 2136\nconst Meter_Qb = (msg.payload.readFloatBE(75, 79)); // 2138\nconst Meter_Qc = (msg.payload.readFloatBE(79, 83)); // 2140\nconst Meter_St = (msg.payload.readFloatBE(83, 87)); // 2142\nconst Meter_Sa = (msg.payload.readFloatBE(87, 91)); // 2144\nconst Meter_Sb = (msg.payload.readFloatBE(91, 95)); // 2146\nconst Meter_Sc = (msg.payload.readFloatBE(95, 99)); // 2148\nconst Meter_CosFt = (msg.payload.readFloatBE(99, 103)); // 2150\nconst Meter_CosFa = (msg.payload.readFloatBE(103, 107)); // 2152\nconst Meter_CosFb = (msg.payload.readFloatBE(107, 111)); // 2154\nconst Meter_CosFc = (msg.payload.readFloatBE(111, 115)); // 2156\nconst Meter_EQ_imp = (msg.payload.readFloatBE(115, 119)); //2158\nconst Meter_EQ_exp = (msg.payload.readFloatBE(119, 123)); //2160\nconst Meter_EP_imp = (msg.payload.readFloatBE(131, 135)); //2166\nconst Meter_EP_exp = (msg.payload.readFloatBE(147, 151)); //2174\nconst Meter_Tgt = ((msg.payload.readFloatBE(67, 71)) / (msg.payload.readFloatBE(51, 55))); //2174\n\nmsg.Meter_ID = Meter_ID; \nmsg.Meter_FC = Meter_FC; \nmsg.Meter_Bytes = Meter_Bytes;\nmsg.Meter_Ia = Meter_Ia.toFixed(3); \nmsg.Meter_Ib = Meter_Ib.toFixed(3); \nmsg.Meter_Ic = Meter_Ic.toFixed(3);\nmsg.Meter_Ua = Meter_Ua.toFixed(1);\nmsg.Meter_Ub = Meter_Ub.toFixed(1);\nmsg.Meter_Uc = Meter_Uc.toFixed(1);\nmsg.Meter_Uab = Meter_Uab.toFixed(1);\nmsg.Meter_Ubc = Meter_Ubc.toFixed(1);\nmsg.Meter_Uca = Meter_Uca.toFixed(1);\nmsg.Meter_Freq = Meter_Freq.toFixed(2);\nmsg.Meter_Pt = Meter_Pt.toFixed(1);\nmsg.Meter_Pa = Meter_Pa.toFixed(1);\nmsg.Meter_Pb = Meter_Pb.toFixed(1);\nmsg.Meter_Pc = Meter_Pc.toFixed(1);\nmsg.Meter_Qt = Meter_Qt.toFixed(0);\nmsg.Meter_Qa = Meter_Qa.toFixed(1);\nmsg.Meter_Qb = Meter_Qb.toFixed(1);\nmsg.Meter_Qc = Meter_Qc.toFixed(1);\nmsg.Meter_St = Meter_St.toFixed(1);\nmsg.Meter_Sa = Meter_Sa.toFixed(1);\nmsg.Meter_Sb = Meter_Sb.toFixed(1);\nmsg.Meter_Sc = Meter_Sc.toFixed(1);\nmsg.Meter_CosFt = Meter_CosFt.toFixed(2);\nmsg.Meter_CosFa = Meter_CosFa.toFixed(2);\nmsg.Meter_CosFb = Meter_CosFb.toFixed(2);\nmsg.Meter_CosFc = Meter_CosFc.toFixed(2);\nmsg.Meter_EQ_imp = Meter_EQ_imp.toFixed(3);\nmsg.Meter_EQ_exp = Meter_EQ_exp.toFixed(3);\nmsg.Meter_EP_imp = Meter_EP_imp.toFixed(3);\nmsg.Meter_EP_exp = Meter_EP_exp.toFixed(3);\nmsg.Meter_Tgt = Meter_Tgt.toFixed(3);\n\n} else {\n    return null;\n}\n\nmsg.topic = 'Huawei_Meter_DTSU666H';\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 650,
+        "y": 80,
+        "wires": [
+            [
+                "861121f51c6b660c"
+            ]
+        ]
+    },
+    {
+        "id": "861121f51c6b660c",
+        "type": "debug",
+        "z": "87d8bd25b9d705a6",
+        "name": "debug 22",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "b0911ed4bd5123c3",
+        "type": "function",
+        "z": "87d8bd25b9d705a6",
+        "name": "sends every 13 msg",
+        "func": "// The counter value should not be less than 13,\n// as it will cause NOd-Red to hang and bug\n\nglobal.licznik = (global.licznik || 0) + 1;\nif (global.licznik % 13 === 0) {\n    return msg;\n} else {\n    return null;\n}",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 80,
+        "wires": [
+            [
+                "327634cceeca8863"
+            ]
+        ]
+    },
+    {
+        "id": "b02f482727dc8292",
+        "type": "comment",
+        "z": "87d8bd25b9d705a6",
+        "name": "Set UDP port:",
+        "info": "Settings UDP Nod of Sniffering RS-485 wire line \nbetween the Inverter and the Meter:\n\nLissten for: udp message\nOn port: 2005  using: ipv4 \nOutput: a Buffer\n",
+        "x": 150,
+        "y": 40,
+        "wires": []
+    }
+]
